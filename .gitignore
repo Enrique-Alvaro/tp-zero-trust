@@ -1,0 +1,24 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+backend/node_modules
+zero-trust-frontend/node_modules
+zero-trust-frontend/.pnp
+.pnp.js
+
+# testing
+zero-trust-frontend/coverage
+
+# production
+zero-trust-frontend/build
+
+# misc
+zero-trust-frontend/.DS_Store
+zero-trust-frontend/.env.local
+zero-trust-frontend/.env.development.local
+zero-trust-frontend/.env.test.local
+zero-trust-frontend/.env.production.local
+
+zero-trust-frontend/npm-debug.log*
+zero-trust-frontend/yarn-debug.log*
+zero-trust-frontend/yarn-error.log*
