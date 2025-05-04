@@ -1,59 +1,59 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const Login = ({ onLogin }) => {
+const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+
     try {
-      const response = await axios.post('http://localhost:3001/api/auth/login', {
-        username,
-        password,
+      const response = await fetch('http://localhost:3001/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
       });
 
-      const { token, role } = response.data;
-      localStorage.setItem('token', token);
-      localStorage.setItem('role', role);
-      onLogin(role);
+      if (!response.ok) {
+        throw new Error('Credenciales inválidas');
+      }
+
+      const data = await response.json();
+      console.log('Login data:', data);
+      // Guardar token y datos del usuario en localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
       navigate('/dashboard');
     } catch (err) {
       console.error('Error al iniciar sesión', err);
-      setError('Credenciales inválidas');
+      alert('Credenciales inválidas');
     }
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl mb-4">Iniciar sesión</h1>
-      <form onSubmit={handleLogin} className="space-y-4">
-        <div>
-          <label className="block">Usuario:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="border p-2 w-full"
-          />
-        </div>
-        <div>
-          <label className="block">Contraseña:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border p-2 w-full"
-          />
-        </div>
-        {error && <div className="text-red-500">{error}</div>}
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-          Ingresar
-        </button>
+    <div className="login-container">
+      <h2>Iniciar Sesión</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Usuario"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button type="submit">Ingresar</button>
       </form>
     </div>
   );

@@ -1,22 +1,30 @@
-import React from 'react';
-import { useAuth } from '../utils/auth';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const Dashboard = () => {
-  const { token } = useAuth();
+function Dashboard() {
+  const navigate = useNavigate();
+  const [role, setRole] = useState(null);
 
-  const userRole = token ? JSON.parse(atob(token.split('.')[1])).role : null;
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+
+    if (!token || !userData) {
+      navigate('/');
+    } else {
+      setRole(JSON.parse(userData).role);
+    }
+  }, [navigate]);
 
   return (
     <div>
-      <h2>Dashboard</h2>
-      <p>Bienvenido, {userRole === 'admin' ? 'Admin' : 'User'}!</p>
-      {userRole === 'admin' ? (
-        <div>Contenido exclusivo para admins.</div>
-      ) : (
-        <div>Contenido limitado para usuarios.</div>
-      )}
+      <h2>Bienvenido al Dashboard</h2>
+      {role === 'admin' && <p>Estás viendo contenido para administradores.</p>}
+      {role === 'paciente' && <p>Estás viendo contenido para pacientes.</p>}
+      {role === 'medico' && <p>Estás viendo contenido para medicos.</p>}
+      {role === 'recepcionista' && <p>Estás viendo contenido para recepcionistas.</p>}
     </div>
   );
-};
+}
 
 export default Dashboard;

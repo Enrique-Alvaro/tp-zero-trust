@@ -1,30 +1,107 @@
 const express = require('express');
-const sequelize = require('./config/db');
-const authRoutes = require('./routes/authRoutes');
-const User = require('./models/User');
-const bcrypt = require('bcrypt');
 const cors = require('cors');
-
-
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const app = express();
-app.use(cors({
-    origin: 'http://localhost:3000',
-    credentials: true // si vas a manejar cookies, JWT en headers, etc.
-  }));
+const PORT = 3001;
+
+app.use(cors());
 app.use(express.json());
 
-app.use('/api/auth', authRoutes);
+// Middleware para verificar token
+function verifyToken(req, res, next) {
+  const token = req.headers['authorization']?.split(' ')[1];
+  if (!token) return res.status(403).json({ message: 'Token requerido' });
 
-app.get('/', (req, res) => res.send('API funcionando'));
+  jwt.verify(token, 'secreto', (err, user) => {
+    if (err) return res.status(403).json({ message: 'Token inválido' });
+    req.user = user;
+    next();
+  });
+}
 
-// Inicializar base de datos y servidor
-const init = async () => {
-    await sequelize.sync({ force: true });
+// Middleware para verificar rol
+function authorizeRole(requiredRole) {
+  return (req, res, next) => {
+    const user = req.user;
+    if (!user || user.role !== requiredRole) {
+      return res.status(403).json({ message: 'Acceso denegado: rol insuficiente' });
+    }
+    next();
+  };
+}
 
-    const hashedPassword = await bcrypt.hash('admin123', 10);
-    await User.create({ username: 'admin', password: hashedPassword, role: 'admin' });
+// Usuario hardcodeado
+const users = [
+  {
+    id: 1,
+    username: 'admin',
+    password: bcrypt.hashSync('1234567', 10),
+    role: 'admin'
+  },
+  {
+    id: 2,
+    username: 'paciente',
+    password: bcrypt.hashSync('1234567', 10),
+    role: 'paciente'
+  },
+  {
+    id: 3,
+    username: 'recepcionista',
+    password: bcrypt.hashSync('1234567', 10),
+    role: 'recepcionista'
+  },
+  {
+    id: 4,
+    username: 'medico',
+    password: bcrypt.hashSync('1234567', 10),
+    role: 'medico'
+  }
+];
 
-    app.listen(3001, () => console.log('Backend escuchando en http://localhost:3001'));
-};
+// Login
+app.post('/api/auth/login', (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find(u => u.username === username);
 
-init();
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    return res.status(401).json({ message: 'Credenciales inválidas' });
+  }
+
+  const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, 'secreto', {
+    expiresIn: '1h'
+  });
+
+  res.json({
+    token,
+    user: {
+      id: user.id,
+      username: user.username,
+      role: user.role
+    }
+  });
+});
+
+// Ruta para admins
+app.get('/api/admin/data', verifyToken, authorizeRole('admin'), (req, res) => {
+  res.json({ message: 'Accediste a datos de administrador.' });
+});
+
+// Ruta para pacientes
+app.get('/api/patient/data', verifyToken, authorizeRole('paciente'), (req, res) => {
+  res.json({ message: 'Accediste a datos de paciente.' });
+});
+
+// Ruta para medicos
+app.get('/api/medic/data', verifyToken, authorizeRole('medico'), (req, res) => {
+  res.json({ message: 'Accediste a datos de medico.' });
+});
+
+// Ruta para recepcionistas
+app.get('/api/recepcionist/data', verifyToken, authorizeRole('recepcionista'), (req, res) => {
+  res.json({ message: 'Accediste a datos de recepcionista.' });
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});
