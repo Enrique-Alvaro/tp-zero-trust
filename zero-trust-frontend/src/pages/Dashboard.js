@@ -23,6 +23,7 @@ function Dashboard() {
       {role === 'paciente' && <p>Estás viendo contenido para pacientes.</p>}
       {role === 'medico' && <p>Estás viendo contenido para medicos.</p>}
       {role === 'recepcionista' && <p>Estás viendo contenido para recepcionistas.</p>}
+      {role === 'admin' && (<button onClick={() => navigate('/admin')}> Ir al panel de Admin </button>)}
     </div>
   );
 }
