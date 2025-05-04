@@ -105,3 +105,38 @@ app.get('/api/recepcionist/data', verifyToken, authorizeRole('recepcionista'), (
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
+//Creacion de usuarios Hardcodeados
+/*
+username: admin
+pass: 1234567
+
+username: medico
+pass: 1234567
+
+username: recepcionista
+pass: 1234567
+
+username: paciente
+pass: 1234567
+*/
+
+const sequelize = require('./config/db');
+const User = require('./models/User');
+
+const init = async () => {
+  await sequelize.sync({ force: true }); // Resetea la base
+
+  const hashed = await bcrypt.hash('1234567', 10);
+
+  await User.bulkCreate([
+    { username: 'admin', password: hashed, role: 'admin' },
+    { username: 'doctor', password: hashed, role: 'medico' },
+    { username: 'recepcion', password: hashed, role: 'recepcion' }
+  ]);
+
+  console.log('Usuarios creados.');
+};
+
+init();
+
