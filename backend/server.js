@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const app = express();
 const PORT = 3001;
+const logAuditoria = require('./utils/logAuditoria');
 
 app.use(cors());
 app.use(express.json());
@@ -60,13 +61,16 @@ const users = [
 ];
 
 // Login
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
   const user = users.find(u => u.username === username);
 
   if (!user || !bcrypt.compareSync(password, user.password)) {
+    await logAuditoria(user?.id ?? null, 'Login fallido', `Credenciales inválidas para usuario: ${username}`, username);
     return res.status(401).json({ message: 'Credenciales inválidas' });
   }
+
+  await logAuditoria(user.id, 'Login exitoso', `El usuario ${username} inició sesión`, username);
 
   const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, 'secreto', {
     expiresIn: '1h'
@@ -123,6 +127,7 @@ pass: 1234567
 
 const sequelize = require('./config/db');
 const User = require('./models/User');
+const Auditoria = require('./models/Auditoria');
 
 const init = async () => {
   await sequelize.sync({ force: true }); // Resetea la base
