@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
@@ -6,6 +6,13 @@ const Dashboard = () => {
 
   const user = JSON.parse(localStorage.getItem('user'));
   const role = user?.role;
+
+  useEffect(() => {
+    if (!user || !localStorage.getItem('token')) {
+      alert('No tienes una sesión iniciada. Serás redirigido al login.');
+      navigate('/');
+    }
+  }, [navigate, user]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -20,21 +27,28 @@ const Dashboard = () => {
       {role === 'admin' && (
         <>
           <p>Estás viendo contenido para administradores.</p>
-          <button>Ir al panel de Admin</button>
+          (<button onClick={() => navigate('/admin')}> Ir al panel de Admin </button>)
+        </>
+      )}
+
+      {role === 'paciente' && (
+        <>
+          <p>Estás viendo contenido para pacientes.</p>
+          (<button onClick={() => navigate('/paciente')}> Ir al panel de Pacientes </button>)
         </>
       )}
 
       {role === 'medico' && (
         <>
           <p>Estás viendo contenido para médicos.</p>
-          <button>Ir al panel del Doctor</button>
+          (<button onClick={() => navigate('/medico')}> Ir al panel de Medico </button>)
         </>
       )}
 
-      {role === 'recepcion' && (
+      {role === 'recepcionista' && (
         <>
           <p>Estás viendo contenido para el área de recepción.</p>
-          <button>Ir al panel de Recepción</button>
+          (<button onClick={() => navigate('/recepcionista')}> Ir al panel de Recepcion </button>)
         </>
       )}
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const AdminPanel = () => {
+const PacientePanel = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
@@ -10,13 +10,13 @@ const AdminPanel = () => {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
 
-    if (!token || user.role !== 'admin') {
+    if (!token || user.role !== 'paciente') {
       alert('Acceso denegado para rol actual');
       navigate('/dashboard');
       return;
     }
 
-    axios.get('http://localhost:3001/api/admin/data', {
+    axios.get('http://localhost:3001/api/patient/data', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -30,7 +30,7 @@ const AdminPanel = () => {
 
   return (
     <div>
-      <h2>Panel de Admin</h2>
+      <h2>Panel del Paciente</h2>
       <p>{message}</p>
       <button onClick={() => navigate('/dashboard')}
       style={{
@@ -45,4 +45,4 @@ const AdminPanel = () => {
   );
 };
 
-export default AdminPanel;
+export default PacientePanel;
