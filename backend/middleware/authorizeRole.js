@@ -1,4 +1,5 @@
 // middleware/authorizeRole.js
+const logAuditoria = require('./utils/logAuditoria');
 module.exports = function (requiredRole) {
     return async(req, res, next) => {
       const user = req.user; // viene desde verifyToken
