@@ -23,11 +23,23 @@ function verifyToken(req, res, next) {
 
 // Middleware para verificar rol
 function authorizeRole(requiredRole) {
-  return (req, res, next) => {
+  return async(req, res, next) => {
     const user = req.user;
     if (!user || user.role !== requiredRole) {
+      await logAuditoria(
+        userId,
+        'Acceso denegado',
+        `Intento de acceso a ruta protegida con rol requerido "${requiredRole}". Rol actual: "${user?.role || 'ninguno'}".`,
+        username
+      );
       return res.status(403).json({ message: 'Acceso denegado: rol insuficiente' });
     }
+    await logAuditoria(
+      user.id,
+      'Acceso autorizado',
+      `Usuario ${user.username} accedió correctamente con el rol ${requiredRole}`,
+      user.username
+    );
     next();
   };
 }
