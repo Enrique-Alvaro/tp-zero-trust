@@ -2,6 +2,12 @@ const connection = require('../config/db');
 
 
 const logAuditoria = async (usuarioId, accion, descripcion, username) => {
+  if (!usuarioId) {
+    console.warn(`[AUDITORÍA] Se omitió el log porque usuarioId es NULL`);
+    return;
+  }
+  
+  
   console.log('>>> logAuditoria.js fue ejecutado');
 
   const query = `
