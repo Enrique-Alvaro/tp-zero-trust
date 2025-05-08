@@ -1,18 +1,22 @@
-const Auditoria = require('../models/Auditoria');
+const connection = require('../config/db');
 
-const logAuditoria = async (usuarioId, accion, descripcion , username ) => {
-    console.log('>>> logAuditoria.js fue ejecutado');
-    try {
-    const log = await Auditoria.create({ usuarioId, accion, descripcion });
 
-    // ✅ Mostrar en consola con el nombre de usuario (si está disponible)
+const logAuditoria = async (usuarioId, accion, descripcion, username) => {
+  console.log('>>> logAuditoria.js fue ejecutado');
+
+  const query = `
+    INSERT INTO auditoria (usuarioId, accion, descripcion, fecha)
+    VALUES (?, ?, ?, NOW())
+  `;
+
+  connection.query(query, [usuarioId, accion, descripcion], (err, results) => {
+    if (err) {
+      console.error('[ERROR AUDITORÍA]', err);
+      return;
+    }
+
     console.log(`[AUDITORÍA] ${new Date().toISOString()} | Usuario: ${username || 'N/A'} | UsuarioID: ${usuarioId ?? 'N/A'} | Acción: ${accion} | Descripción: ${descripcion}`);
-
-    return log;
-  } catch (error) {
-    console.error('[ERROR AUDITORÍA]', error);
-  }
+  });
 };
 
 module.exports = logAuditoria;
-

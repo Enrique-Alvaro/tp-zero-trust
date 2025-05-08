@@ -5,9 +5,23 @@ const bcrypt = require('bcrypt');
 const app = express();
 const PORT = 3001;
 const logAuditoria = require('./utils/logAuditoria');
+const connection = require('./config/db');//nueva base RDS
 
 app.use(cors());
 app.use(express.json());
+
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
+
+
+connection.connect((err) => {
+  if (err) {
+    console.error('Error al conectar a la base de datos:', err);
+    process.exit(1);
+  }
+  console.log('Conectado a la base de datos MySQL');
+});
+
 
 // Middleware para verificar token
 function verifyToken(req, res, next) {
@@ -45,6 +59,7 @@ function authorizeRole(requiredRole) {
 }
 
 // Usuario hardcodeado
+/*
 const users = [
   {
     id: 1,
@@ -71,11 +86,45 @@ const users = [
     role: 'medico'
   }
 ];
+*/
+
 
 // Login
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
-  const user = users.find(u => u.username === username);
+  connection.query(
+    'SELECT * FROM users WHERE username = ?',
+    [username],
+    async (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Error en el servidor' });
+      }
+  
+      const user = results[0];
+  
+      if (!user || !bcrypt.compareSync(password, user.password)) {
+        await logAuditoria(user?.id ?? null, 'Login fallido', `Credenciales inválidas para usuario: ${username}`, username);
+        return res.status(401).json({ message: 'Credenciales inválidas' });
+      }
+  
+      await logAuditoria(user.id, 'Login exitoso', `El usuario ${username} inició sesión`, username);
+  
+      const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, 'secreto', {
+        expiresIn: '1h'
+      });
+  
+      res.json({
+        token,
+        user: {
+          id: user.id,
+          username: user.username,
+          role: user.role
+        }
+      });
+    }
+  );
+  
 
   if (!user || !bcrypt.compareSync(password, user.password)) {
     await logAuditoria(user?.id ?? null, 'Login fallido', `Credenciales inválidas para usuario: ${username}`, username);
@@ -136,24 +185,3 @@ pass: 1234567
 username: paciente
 pass: 1234567
 */
-
-const sequelize = require('./config/db');
-const User = require('./models/User');
-const Auditoria = require('./models/Auditoria');
-
-const init = async () => {
-  await sequelize.sync({ force: true }); // Resetea la base
-
-  const hashed = await bcrypt.hash('1234567', 10);
-
-  await User.bulkCreate([
-    { username: 'admin', password: hashed, role: 'admin' },
-    { username: 'doctor', password: hashed, role: 'medico' },
-    { username: 'recepcion', password: hashed, role: 'recepcion' }
-  ]);
-
-  console.log('Usuarios creados.');
-};
-
-init();
-
