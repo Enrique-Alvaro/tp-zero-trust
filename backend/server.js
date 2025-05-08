@@ -122,6 +122,27 @@ app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
 
+app.get('/api/admin/logs', verifyToken, authorizeRole('admin'), async (req, res) => {
+  try {
+    const logs = await Auditoria.findAll({ order: [['createdAt', 'DESC']] });
+    res.json(logs);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error al obtener logs' });
+  }
+});
+
+// Ruta: Obtener usuarios
+app.get('/api/admin/users', verifyToken, authorizeRole('admin'), async (req, res) => {
+  try {
+    const users = await User.findAll({ attributes: ['id', 'username', 'role'] });
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error al obtener usuarios' });
+  }
+});
+
 //Creacion de usuarios Hardcodeados
 /*
 username: admin
