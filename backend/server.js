@@ -122,6 +122,51 @@ app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
 
+
+const Turno = require('./models/Turno'); // Importar el modelo Turno
+
+// Ruta para obtener todos los turnos
+app.get('/api/turnos', async (req, res) => {
+  try {
+    const turnos = await Turno.findAll(); // Obtener todos los turnos de la base de datos
+    res.json(turnos); // Enviar los turnos como respuesta
+  } catch (err) {
+    console.error('Error al obtener los turnos:', err);
+    res.status(500).json({ message: 'Error al obtener los turnos' });
+  }
+});
+
+// Ruta para agregar un nuevo turno
+app.post('/api/turnos', async (req, res) => {
+  const { nombre, fecha } = req.body;
+
+  try {
+    const nuevoTurno = await Turno.create({ nombre, fecha }); // Crear un nuevo turno
+    res.status(201).json(nuevoTurno); // Enviar el turno creado como respuesta
+  } catch (err) {
+    console.error('Error al agregar el turno:', err);
+    res.status(500).json({ message: 'Error al agregar el turno' });
+  }
+});
+
+
+// Ruta para eliminar un turno por ID
+app.delete('/api/turnos/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const turno = await Turno.findByPk(id); // Buscar el turno por ID
+    if (!turno) {
+      return res.status(404).json({ message: 'Turno no encontrado' });
+    }
+
+    await turno.destroy(); // Eliminar el turno
+    res.json({ message: 'Turno eliminado correctamente' });
+  } catch (err) {
+    console.error('Error al eliminar el turno:', err);
+    res.status(500).json({ message: 'Error al eliminar el turno' });
+  }
+});
 //Creacion de usuarios Hardcodeados
 /*
 username: admin
@@ -142,7 +187,7 @@ const User = require('./models/User');
 const Auditoria = require('./models/Auditoria');
 
 const init = async () => {
-  await sequelize.sync({ force: true }); // Resetea la base
+  await sequelize.sync({ force: true }); // Cambiado a false para evitar reiniciar la base de datos
 
   const hashed = await bcrypt.hash('1234567', 10);
 
@@ -153,6 +198,22 @@ const init = async () => {
   ]);
 
   console.log('Usuarios creados.');
+
+    // Crear turnos hardcodeados
+    await Turno.bulkCreate([
+      { nombre: 'Juan Pérez', fecha: '2025-05-10T10:00:00' },
+      { nombre: 'María López', fecha: '2025-05-11T11:00:00' },
+      { nombre: 'Carlos Gómez', fecha: '2025-05-12T12:00:00' },
+      { nombre: 'Ana Torres', fecha: '2025-05-13T13:00:00' },
+      { nombre: 'Luis Fernández', fecha: '2025-05-14T14:00:00' },
+      { nombre: 'Sofía Martínez', fecha: '2025-05-15T15:00:00' },
+      { nombre: 'Pedro Sánchez', fecha: '2025-05-16T16:00:00' },
+      { nombre: 'Laura Ramírez', fecha: '2025-05-17T17:00:00' },
+      { nombre: 'Diego Castro', fecha: '2025-05-18T18:00:00' },
+      { nombre: 'Valeria Rojas', fecha: '2025-05-19T19:00:00' }
+    ]);
+  
+    console.log('Turnos creados.');
 };
 
 init();
