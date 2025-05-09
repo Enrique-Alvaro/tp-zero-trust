@@ -47,9 +47,9 @@ const login = async (req, res) => {
   };
 
 const register = async (req, res) => {
-  const { first_name, last_name, username, email, password } = req.body;
+  const { first_name, last_name, username, email, password, role } = req.body;
 
-  if (!first_name || !last_name || !username || !email || !password) {
+  if (!first_name || !last_name || !username || !email || !password || !role ) {
     return res.status(400).json({ message: 'Faltan campos obligatorios' });
   }
 
