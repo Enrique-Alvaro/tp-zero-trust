@@ -58,36 +58,6 @@ function authorizeRole(requiredRole) {
   };
 }
 
-// Usuario hardcodeado
-/*
-const users = [
-  {
-    id: 1,
-    username: 'admin',
-    password: bcrypt.hashSync('1234567', 10),
-    role: 'admin'
-  },
-  {
-    id: 2,
-    username: 'paciente',
-    password: bcrypt.hashSync('1234567', 10),
-    role: 'paciente'
-  },
-  {
-    id: 3,
-    username: 'recepcionista',
-    password: bcrypt.hashSync('1234567', 10),
-    role: 'recepcionista'
-  },
-  {
-    id: 4,
-    username: 'medico',
-    password: bcrypt.hashSync('1234567', 10),
-    role: 'medico'
-  }
-];
-*/
-
 
 // Login
 app.post('/api/auth/login', async (req, res) => {
