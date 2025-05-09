@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
+import logo from '../assets/logo.png';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -30,31 +31,28 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <h2 className="login-title">Iniciar sesión</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            className="login-input"
-            type="text"
-            placeholder="Usuario"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          <input
-            className="login-input"
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button className="login-button" type="submit">Ingresar</button>
-        </form>
-      </div>
+  <div className="login-container">
+    <div className="login-header">
+      <img src={logo} alt="Logo Clínica San Cristóbal" className="clinic-logo" />
+      <h2>Bienvenido a Clínica San Cristóbal</h2>
     </div>
-  );
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder="Email"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Contraseña"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button type="submit">Iniciar sesión</button>
+    </form>
+  </div>
+);
 };
 
 export default Login;
