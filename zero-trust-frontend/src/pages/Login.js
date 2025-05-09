@@ -32,27 +32,32 @@ const Login = () => {
 
   return (
   <div className="login-container">
-    <div className="login-header">
-      <img src={logo} alt="Logo Clínica San Cristóbal" className="clinic-logo" />
-      <h2>Bienvenido a Clínica San Cristóbal</h2>
+    <div className="login-box">
+      <img src={require('../assets/logo.png')} alt="Clínica San Cristóbal" className="login-logo" />
+      <h2 className="login-title">Bienvenido a Clínica San Cristóbal</h2>
+      <form onSubmit={handleSubmit} className="login-form">
+        <input
+          className="login-input"
+          type="text"
+          placeholder="Email"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+        <input
+          className="login-input"
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button className="login-button" type="submit">Iniciar sesión</button>
+      </form>
     </div>
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Email"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Contraseña"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button type="submit">Iniciar sesión</button>
-    </form>
   </div>
 );
+
 };
 
 export default Login;
