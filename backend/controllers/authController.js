@@ -71,8 +71,8 @@ const register = async (req, res) => {
 
       // Insertar nuevo usuario
       const query = `
-        INSERT INTO users (first_name, last_name, username, email, password)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO users (first_name, last_name, username, email, password, role)
+        VALUES (?, ?, ?, ?, ?, ?)
       `;
 
       connection.query(
