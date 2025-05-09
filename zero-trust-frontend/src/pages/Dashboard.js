@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Dashboard.css';
+import logo from '../assets/logo.png';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-
   const user = JSON.parse(localStorage.getItem('user'));
   const role = user?.role;
 
@@ -21,55 +22,47 @@ const Dashboard = () => {
   };
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>Bienvenido al Dashboard</h1>
+    <div className="dashboard-container">
+      <div className="dashboard-card">
+        <img src={logo} alt="Logo" className="dashboard-logo" />
+        <h2 className="dashboard-title">Bienvenido al Dashboard</h2>
 
-      {role === 'admin' && (
-        <>
-          <p>Estás viendo contenido para administradores.</p>
-          (<button onClick={() => navigate('/admin')}> Ir al panel de Admin </button>)
-        </>
-      )}
+        {role === 'admin' && (
+          <>
+            <p>Estás viendo contenido para administradores.</p>
+            <button className="dashboard-button" onClick={() => navigate('/admin')}>Ir al panel de Admin</button>
+          </>
+        )}
 
-      {role === 'paciente' && (
-        <>
-          <p>Estás viendo contenido para pacientes.</p>
-          (<button onClick={() => navigate('/paciente')}> Ir al panel de Pacientes </button>)
-        </>
-      )}
+        {role === 'paciente' && (
+          <>
+            <p>Estás viendo contenido para pacientes.</p>
+            <button className="dashboard-button" onClick={() => navigate('/paciente')}>Ir al panel de Pacientes</button>
+          </>
+        )}
 
-      {role === 'medico' && (
-        <>
-          <p>Estás viendo contenido para médicos.</p>
-          (<button onClick={() => navigate('/medico')}> Ir al panel de Medico </button>)
-        </>
-      )}
+        {role === 'medico' && (
+          <>
+            <p>Estás viendo contenido para médicos.</p>
+            <button className="dashboard-button" onClick={() => navigate('/medico')}>Ir al panel de Médico</button>
+          </>
+        )}
 
-      {role === 'recepcionista' && (
-        <>
-          <p>Estás viendo contenido para el área de recepción.</p>
-          (<button onClick={() => navigate('/recepcionista')}> Ir al panel de Recepcion </button>)
-        </>
-      )}
+        {role === 'recepcionista' && (
+          <>
+            <p>Estás viendo contenido para el área de recepción.</p>
+            <button className="dashboard-button" onClick={() => navigate('/recepcionista')}>Ir al panel de Recepción</button>
+          </>
+        )}
 
-      <hr style={{ margin: '2rem 0' }} />
-
-      <button
-        onClick={handleLogout}
-        style={{
-          backgroundColor: '#d32f2f',
-          color: 'white',
-          padding: '10px 20px',
-          border: 'none',
-          borderRadius: '6px',
-          cursor: 'pointer',
-        }}
-      >
-        Cerrar sesión
-      </button>
+        <button className="dashboard-button logout-button" onClick={handleLogout}>
+          Cerrar sesión
+        </button>
+      </div>
     </div>
   );
 };
 
 export default Dashboard;
+
 

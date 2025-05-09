@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const AdminPanel = () => {
-  const [message, setMessage] = useState('');
   const [logs, setLogs] = useState([]);
   const [users, setUsers] = useState([]);
   const [view, setView] = useState('none'); // 'none', 'logs', 'users'
@@ -18,15 +17,6 @@ const AdminPanel = () => {
       navigate('/dashboard');
       return;
     }
-
-    axios.get('http://localhost:3001/api/admin/data', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    .then(res => setMessage(res.data.message))
-    .catch(err => {
-      console.error(err);
-      setMessage('Acceso denegado o error del servidor.');
-    });
   }, [navigate]);
 
   const handleViewLogs = async () => {
@@ -68,7 +58,7 @@ const AdminPanel = () => {
   return (
     <div>
       <h2>Panel de Admin</h2>
-      <p>{message}</p>
+      <p>Acá iria contenido de acuerdo al panel</p>
 
       <button onClick={handleViewLogs} style={buttonStyle}>Ver Logs</button>
       <button onClick={handleViewUsers} style={buttonStyle}>Ver Usuarios</button>

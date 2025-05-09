@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const PacientePanel = () => {
-  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,23 +14,12 @@ const PacientePanel = () => {
       navigate('/dashboard');
       return;
     }
-
-    axios.get('http://localhost:3001/api/patient/data', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    .then(res => setMessage(res.data.message))
-    .catch(err => {
-      console.error(err);
-      setMessage('Acceso denegado o error del servidor.');
-    });
   }, [navigate]);
 
   return (
     <div>
       <h2>Panel del Paciente</h2>
-      <p>{message}</p>
+      <p>Acá iria contenido de acuerdo al panel</p>
       <button onClick={() => navigate('/dashboard')}
       style={{
           backgroundColor: 'blue',
