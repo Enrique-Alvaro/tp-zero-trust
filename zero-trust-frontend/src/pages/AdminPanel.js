@@ -75,38 +75,41 @@ const AdminPanel = () => {
       <button onClick={() => navigate('/dashboard')} style={buttonStyle}>Volver al Dashboard</button>
 
       {view === 'logs' && (
-        <div>
-          <h3>Logs</h3>
-          {logs.length === 0 ? (
-            <p>No hay logs disponibles.</p>
-          ) : (
-            <ul>
-              {logs.map((log, index) => (
-                <li key={index}>
-                  <strong>{log.accion}</strong> - {log.descripcion} ({log.fecha})
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
-
+  <div>
+    <h3>Logs</h3>
+    {logs.length === 0 ? (
+      <p>No hay logs disponibles.</p>
+    ) : (
+      <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid #ccc', padding: '10px', borderRadius: '8px' }}>
+        <ul>
+          {logs.map((log, index) => (
+            <li key={index}>
+              <strong>{log.accion}</strong> - {log.descripcion} ({log.fecha})
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+)}
       {view === 'users' && (
-        <div>
-          <h3>Usuarios</h3>
-          {users.length === 0 ? (
-            <p>No hay usuarios registrados.</p>
-          ) : (
-            <ul>
-              {users.map((user, index) => (
-                <li key={index}>
-                  {user.id} - {user.username} ({user.email}) - Rol: {user.role}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
+  <div>
+    <h3>Usuarios</h3>
+    {users.length === 0 ? (
+      <p>No hay usuarios registrados.</p>
+    ) : (
+      <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid #ccc', padding: '10px', borderRadius: '8px' }}>
+        <ul>
+          {users.map((user, index) => (
+            <li key={index}>
+              {user.id} - {user.username} ({user.email}) - Rol: {user.role}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+)}
     </div>
   );
 };
