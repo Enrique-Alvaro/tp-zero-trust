@@ -77,7 +77,7 @@ const register = async (req, res) => {
 
       connection.query(
         query,
-        [first_name, last_name, username, email, hashedPassword],
+        [first_name, last_name, username, email, hashedPassword,role],
         async (err, result) => {
           if (err) {
             console.error('Error al registrar usuario:', err);
