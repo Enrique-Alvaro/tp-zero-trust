@@ -2,7 +2,7 @@ const connection = require('../config/db');
 
 // Obtener todos los turnos
 const obtenerTurnos = (req, res) => {
-  connection.query('SELECT * FROM turnos', (err, results) => {
+  connection.query('SELECT * FROM turno', (err, results) => {
     if (err) {
       console.error('Error al obtener turnos', err);
       return res.status(500).json({ message: 'Error al obtener turnos' });
@@ -19,7 +19,7 @@ const crearTurno = (req, res) => {
     return res.status(400).json({ message: 'Faltan campos' });
   }
 
-  const query = 'INSERT INTO turnos (nombre, fecha) VALUES (?, ?)';
+  const query = 'INSERT INTO turno (nombre, fecha) VALUES (?, ?)';
   connection.query(query, [nombre, fecha], (err, result) => {
     if (err) {
       console.error('Error al crear turno', err);
@@ -33,7 +33,7 @@ const crearTurno = (req, res) => {
 const eliminarTurno = (req, res) => {
   const { id } = req.params;
 
-  connection.query('DELETE FROM turnos WHERE id = ?', [id], (err, result) => {
+  connection.query('DELETE FROM turno WHERE id = ?', [id], (err, result) => {
     if (err) {
       console.error('Error al eliminar turno', err);
       return res.status(500).json({ message: 'Error al eliminar turno' });
