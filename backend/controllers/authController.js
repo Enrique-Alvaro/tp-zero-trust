@@ -47,6 +47,7 @@ const login = async (req, res) => {
   };
 
 const register = async (req, res) => {
+  console.log("Datos recibidos:", req.body);
   const { first_name, last_name, username, email, password, role } = req.body;
 
   if (!first_name || !last_name || !username || !email || !password || !role ) {
