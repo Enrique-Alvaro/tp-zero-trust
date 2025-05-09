@@ -141,6 +141,51 @@ app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
 
+
+const Turno = require('./models/Turno'); // Importar el modelo Turno
+
+// Ruta para obtener todos los turnos
+app.get('/api/turnos', async (req, res) => {
+  try {
+    const turnos = await Turno.findAll(); // Obtener todos los turnos de la base de datos
+    res.json(turnos); // Enviar los turnos como respuesta
+  } catch (err) {
+    console.error('Error al obtener los turnos:', err);
+    res.status(500).json({ message: 'Error al obtener los turnos' });
+  }
+});
+
+// Ruta para agregar un nuevo turno
+app.post('/api/turnos', async (req, res) => {
+  const { nombre, fecha } = req.body;
+
+  try {
+    const nuevoTurno = await Turno.create({ nombre, fecha }); // Crear un nuevo turno
+    res.status(201).json(nuevoTurno); // Enviar el turno creado como respuesta
+  } catch (err) {
+    console.error('Error al agregar el turno:', err);
+    res.status(500).json({ message: 'Error al agregar el turno' });
+  }
+});
+
+
+// Ruta para eliminar un turno por ID
+app.delete('/api/turnos/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const turno = await Turno.findByPk(id); // Buscar el turno por ID
+    if (!turno) {
+      return res.status(404).json({ message: 'Turno no encontrado' });
+    }
+
+    await turno.destroy(); // Eliminar el turno
+    res.json({ message: 'Turno eliminado correctamente' });
+  } catch (err) {
+    console.error('Error al eliminar el turno:', err);
+    res.status(500).json({ message: 'Error al eliminar el turno' });
+  }
+});
 //Creacion de usuarios Hardcodeados
 /*
 username: admin
@@ -154,4 +199,5 @@ pass: 1234567
 
 username: paciente
 pass: 1234567
+
 */
