@@ -1,60 +1,73 @@
 .login-container {
-    background: linear-gradient(to right, #e0f2f1, #ffffff);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  background-color: transparent; /* o eliminá esta línea si había blanco */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
 
 .login-header {
   text-align: center;
   margin-bottom: 20px;
 }
 
-.clinic-logo {
-  width: 80px;
-  height: auto;
-  margin-bottom: 10px;
+.login-logo {
+  width: 200px;
+  margin-bottom: 20px;
 }
 
-  .login-box {
-    background-color: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 320px;
-  }
+ .login-box {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  text-align: center;
+}
   
-  .login-title {
-    text-align: center;
-    font-size: 24px;
-    color: #1976d2;
-    margin-bottom: 20px;
-  }
+ .login-title {
+  margin-bottom: 30px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+}
   
   .login-input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-  }
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
   
   .login-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #1976d2;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-  }
+  padding: 10px;
+  background-color: #0077cc;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
   
   .login-button:hover {
-    background-color: #1565c0;
-  }
+  background-color: #005fa3;
+}
+
+body {
+  background: linear-gradient(135deg, #e8f5e9, #b2dfdb); /* verde claro hacia verde agua */
+  height: 100vh;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
   
