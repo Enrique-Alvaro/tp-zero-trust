@@ -17,18 +17,23 @@ const PacientePanel = () => {
   }, [navigate]);
 
   return (
-    <div>
-      <h2>Panel del Paciente</h2>
-      <p>Acá iria contenido de acuerdo al panel</p>
-      <button onClick={() => navigate('/dashboard')}
-      style={{
-          backgroundColor: 'blue',
+    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+      <h2 style={{ color: '#333', marginBottom: '20px' }}>Panel del Paciente</h2>
+      <p style={{ fontSize: '16px', color: '#555' }}>Acá iria contenido de acuerdo al panel</p>
+      <button
+        onClick={() => navigate('/dashboard')}
+        style={{
+          backgroundColor: '#007bff',
           color: 'white',
           padding: '10px 20px',
           border: 'none',
           borderRadius: '6px',
           cursor: 'pointer',
-        }}> Volver al Dashboard </button>
+          fontSize: '16px',
+        }}
+      >
+        Volver al Dashboard
+      </button>
     </div>
   );
 };
