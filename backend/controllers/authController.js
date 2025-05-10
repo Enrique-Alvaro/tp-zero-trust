@@ -31,7 +31,7 @@ const login = async (req, res) => {
   
         await logAuditoria(user.id, 'Login exitoso', `El usuario ${username} inició sesión`, username);
   
-        const token = jwt.sign({ id: user.id, role: user.role }, 'secretKey', { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, role: user.role, email: user.email }, 'secretKey', { expiresIn: '1h' });
   
         //Respuesta del back para el front:
         res.json({
@@ -39,7 +39,8 @@ const login = async (req, res) => {
           user: {
             id: user.id,
             username: user.username,
-            role: user.role
+            role: user.role,
+            email: user.email
           }
         });
       }

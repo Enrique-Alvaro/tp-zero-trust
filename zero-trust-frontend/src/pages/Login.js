@@ -1,63 +1,70 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import OtpVerification from './OtpVerification';
 import './Login.css';
 import logo from '../assets/logo.png';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [step, setStep] = useState(1); // 1: Login, 2: OTP Verification
+  const [error, setError] = useState('');
+  const [loginResponse, setLoginResponse] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleLogin = async () => {
+    setError('');
     try {
-      const response = await fetch('http://localhost:3001/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!response.ok) throw new Error('Credenciales inválidas');
-
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      navigate('/dashboard');
+      const response = await axios.post('http://localhost:3001/api/auth/login', { username, password });
+      console.log(response.data);
+      setLoginResponse(response.data); // Guarda la respuesta del login
+      const { user } = response.data;
+      setEmail(user.email); // Guarda el correo del usuario
+      await axios.post('http://localhost:3001/api/auth/send-otp', { email: user.email }); // Enviar OTP
+      setStep(2); // Cambiar al paso de verificación OTP
     } catch (err) {
-      console.error('Error al iniciar sesión', err);
-      alert('Usuario o contraseña incorrectos');
+      setError(err.response?.data?.message || 'Error al iniciar sesión');
     }
   };
 
-  return (
-  <div className="login-container">
-    <div className="login-box">
-      <img src={require('../assets/logo.png')} alt="Clínica San Cristóbal" className="login-logo" />
-      <h2 className="login-title">Bienvenido a Clínica San Cristóbal</h2>
-      <form onSubmit={handleSubmit} className="login-form">
-        <input
-          className="login-input"
-          type="text"
-          placeholder="Usuario"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-        <input
-          className="login-input"
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button className="login-button" type="submit">Iniciar sesión</button>
-      </form>
-    </div>
-  </div>
-);
+const handleOtpVerified = () => {
+  try {
+    const { token, user } = loginResponse; // Usa la respuesta almacenada
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    window.location.href = '/dashboard'; // Redirigir al dashboard
+  } catch (err) {
+    console.error('Error al guardar el token o redirigir:', err);
+  }
+};
 
+  return (
+    <div className="login-container">
+      <div className="login-card">
+        <img src={logo} alt="Clínica San Cristóbal" className="login-logo" />
+        {step === 1 && (
+          <>
+            <h2>Bienvenido a Clínica San Cristóbal</h2>
+            <input
+              type="text"
+              placeholder="Nombre de usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button onClick={handleLogin}>Iniciar Sesión</button>
+            {error && <p className="error">{error}</p>}
+          </>
+        )}
+        {step === 2 && <OtpVerification email={email} onVerified={handleOtpVerified} />}
+      </div>
+    </div>
+  );
 };
 
 export default Login;

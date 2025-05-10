@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const sendMail = require('./utils/mailer');
 const app = express();
 const PORT = 3001;
 const logAuditoria = require('./utils/logAuditoria');
@@ -82,7 +84,7 @@ app.post('/api/auth/login', async (req, res) => {
   
       await logAuditoria(user.id, 'Login exitoso', `El usuario ${username} inició sesión`, username);
   
-      const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, 'secreto', {
+      const token = jwt.sign({ id: user.id, username: user.username, role: user.role, email: user.email }, 'secreto', {
         expiresIn: '1h'
       });
   
@@ -91,7 +93,8 @@ app.post('/api/auth/login', async (req, res) => {
         user: {
           id: user.id,
           username: user.username,
-          role: user.role
+          role: user.role,
+          email: user.email
         }
       });
     }
@@ -105,7 +108,7 @@ app.post('/api/auth/login', async (req, res) => {
 
   await logAuditoria(user.id, 'Login exitoso', `El usuario ${username} inició sesión`, username);
 
-  const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, 'secreto', {
+  const token = jwt.sign({ id: user.id, username: user.username, role: user.role, email: user.email }, 'secreto', {
     expiresIn: '1h'
   });
 
@@ -114,7 +117,8 @@ app.post('/api/auth/login', async (req, res) => {
     user: {
       id: user.id,
       username: user.username,
-      role: user.role
+      role: user.role,
+      mail: user.mail
     }
   });
 });
@@ -145,3 +149,38 @@ app.listen(PORT, () => {
 
 const turnoRoutes = require('./routes/turnoRoutes');
 app.use('/api/turnos', turnoRoutes);
+
+const otps = {}; // Almacén temporal para los OTPs (usa una base de datos en producción)
+
+// Ruta para enviar el OTP
+app.post('/api/auth/send-otp', async (req, res) => {
+  const { email } = req.body;
+
+  // Generar un código OTP de 6 dígitos
+  const otp = crypto.randomInt(100000, 999999).toString();
+
+  // Guardar el OTP en memoria (asociado al correo)
+  otps[email] = otp;
+
+  try {
+    // Enviar el OTP al correo del usuario
+    await sendMail(email, 'Tu código OTP', `Tu código de verificación es: ${otp}`);
+    res.json({ message: 'OTP enviado al correo electrónico' });
+  } catch (error) {
+    console.error('Error al enviar el correo:', error);
+    res.status(500).json({ message: 'Error al enviar el correo' });
+  }
+});
+
+// Ruta para verificar el OTP
+app.post('/api/auth/verify-otp', (req, res) => {
+  const { email, otp } = req.body;
+
+  // Verificar si el OTP es correcto
+  if (otps[email] === otp) {
+    delete otps[email]; // Eliminar el OTP después de usarlo
+    res.json({ message: 'OTP verificado correctamente' });
+  } else {
+    res.status(400).json({ message: 'OTP inválido o expirado' });
+  }
+});
