@@ -11,7 +11,11 @@ const MedicoPanelDetails = () => {
   }
 
   return (
-    <div style={{}}>
+    <div style={{ display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '100vh',
+      padding: '20px',}}>
       <div style={{
         backgroundColor: 'white',
         borderRadius: '10px',
@@ -37,16 +41,13 @@ const MedicoPanelDetails = () => {
           <strong>Edad:</strong> {paciente.edad} años
         </p>
         <p style={{ fontSize: '18px', marginBottom: '10px' }}>
-          <strong>Sexo:</strong> {paciente.sexo}
-        </p>
-        <p style={{ fontSize: '18px', marginBottom: '10px' }}>
           <strong>Altura:</strong> {paciente.altura} cm
         </p>
         <p style={{ fontSize: '18px', marginBottom: '10px' }}>
           <strong>Peso:</strong> {paciente.peso} kg
         </p>
         <p style={{ fontSize: '18px', marginBottom: '20px' }}>
-          <strong>Motivo de la consulta:</strong> {paciente.motivo}
+          <strong>Motivo de la consulta:</strong> {paciente.motivo_consulta}
         </p>
         <button onClick={() => navigate('/medico')}
           style={{
