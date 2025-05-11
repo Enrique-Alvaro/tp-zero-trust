@@ -18,13 +18,13 @@ const MedicoPanel = () => {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
 
-    if (!token || user.role !== 'medico') {
+    if (!token || (user.role !== 'medico' && user.role !== 'admin')) {
       alert('Acceso denegado para rol actual');
       navigate('/dashboard');
       return;
     }
 
-     axios.get('http://localhost:3001/api/turnos', {
+    axios.get('http://localhost:3001/api/turnos', {
       headers: {
         Authorization: `Bearer ${token}`
       }

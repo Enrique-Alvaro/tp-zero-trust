@@ -14,7 +14,7 @@ const PacientePanel = () => {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
 
-    if (!token || user.role !== 'paciente') {
+    if (!token || (user.role !== 'paciente' && user.role !== 'admin')) {
       alert('Acceso denegado');
       navigate('/dashboard');
     }

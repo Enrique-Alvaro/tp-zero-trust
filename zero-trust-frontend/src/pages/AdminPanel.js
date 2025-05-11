@@ -62,6 +62,12 @@ const AdminPanel = () => {
         <button onClick={() => navigate('/dashboard')} style={buttonStyle}>Volver al Dashboard</button>
       </div>
 
+      <div style={buttonContainerStyle}>
+        <button onClick={() => navigate('/medico')} style={buttonStyle}>Ir al Panel de Médico</button>
+        <button onClick={() => navigate('/paciente')} style={buttonStyle}>Ir al Panel de Paciente</button>
+        <button onClick={() => navigate('/recepcionista')} style={buttonStyle}>Ir al Panel de Recepcionista</button>
+      </div>
+
       {view === 'logs' && (
         <div style={sectionStyle}>
           <h3 style={sectionHeaderStyle}>Logs</h3>

@@ -17,7 +17,7 @@ const RecepcionistaPanel = () => {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
 
-    if (!token || user.role !== 'recepcionista') {
+    if (!token || (user.role !== 'recepcionista' && user.role !== 'admin')) {
       alert('Acceso denegado para rol actual');
       navigate('/dashboard');
       return;
