@@ -6,6 +6,7 @@ import AdminPanel from './pages/AdminPanel';
 import PacientePanel from './pages/PacientePanel';
 import MedicoPanel from './pages/MedicoPanel';
 import RecepcionistaPanel from './pages/RecepcionistaPanel';
+import MedicoPanelDetails from './pages/MedicoPanel_Details';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -23,6 +24,7 @@ function App() {
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/paciente" element={<PacientePanel />} />
         <Route path="/medico" element={<MedicoPanel />} />
+         <Route path="/medico-panel/details" element={<MedicoPanelDetails />} />
         <Route path="/recepcionista" element={<RecepcionistaPanel />} />
       </Routes>
     </Router>
