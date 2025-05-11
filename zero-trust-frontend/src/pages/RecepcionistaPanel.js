@@ -94,7 +94,6 @@ const RecepcionistaPanel = () => {
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <h2 style={{ textAlign: 'center', color: '#4CAF50' }}>Panel de Recepcionista</h2>
-      <p style={{ textAlign: 'center', color: '#555' }}>Acá iria contenido de acuerdo al panel</p>
 
       <div style={{ marginBottom: '30px', padding: '20px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
         <h3 style={{ color: '#333' }}>Agregar Turno</h3>

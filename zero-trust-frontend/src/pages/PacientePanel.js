@@ -62,7 +62,6 @@ const PacientePanel = () => {
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <h2 style={{ color: '#333', marginBottom: '20px' }}>Panel del Paciente</h2>
-      <p style={{ fontSize: '16px', color: '#555' }}>Acá iría contenido específico para pacientes</p>
 
       <button onClick={handleViewMedicos} style={buttonStyle}>Ver Médicos</button>
       <button onClick={() => setView('solicitar')} style={buttonStyle}>Solicitar Turno</button>
