@@ -41,20 +41,24 @@ const RecepcionistaPanel = () => {
     }
 
     const token = localStorage.getItem('token');
-    const fechaFormateada = new Date(fecha).toISOString();
 
-    axios.post('http://localhost:3001/api/turnos', { nombre, fecha: fechaFormateada }, {
+    axios.post('http://localhost:3001/api/turnos', { nombre, fecha }, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
-    .then(res => {
-      const nuevosTurnos = [...turnos, res.data];
-      const turnosOrdenados = nuevosTurnos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-      setTurnos(turnosOrdenados);
-      setNombre('');
-      setFecha('');
-    })
+    .then(() => {
+    return axios.get('http://localhost:3001/api/turnos', {
+    headers: { Authorization: `Bearer ${token}` }
+   });
+})
+.then(res => {
+  const turnosOrdenados = res.data.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+  setTurnos(turnosOrdenados);
+  setNombre('');
+  setFecha('');
+})
+
     .catch(err => {
       console.error(err);
       alert('Error al agregar el turno.');
