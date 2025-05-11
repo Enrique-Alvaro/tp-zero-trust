@@ -6,6 +6,11 @@ const RecepcionistaPanel = () => {
   const [turnos, setTurnos] = useState([]);
   const [nombre, setNombre] = useState('');
   const [fecha, setFecha] = useState('');
+  const [edad, setEdad] = useState('');
+  const [altura, setAltura] = useState('');
+  const [peso, setPeso] = useState('');
+  const [motivo, setMotivo] = useState('');
+  const [medico, setMedico] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,14 +40,14 @@ const RecepcionistaPanel = () => {
   }, [navigate]);
 
   const handleAddTurno = () => {
-    if (!nombre || !fecha) {
+    if (!nombre || !fecha || !edad || !altura || !peso || !motivo || !medico ) {
       alert('Por favor, completa todos los campos.');
       return;
     }
 
     const token = localStorage.getItem('token');
 
-    axios.post('http://localhost:3001/api/turnos', { nombre, fecha }, {
+    axios.post('http://localhost:3001/api/turnos', { nombre, fecha,edad,altura,peso,motivo,medico }, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -57,6 +62,11 @@ const RecepcionistaPanel = () => {
   setTurnos(turnosOrdenados);
   setNombre('');
   setFecha('');
+  setEdad('');
+  setAltura('');
+  setPeso('');
+  setMotivo('');
+  setMedico('');
 })
 
     .catch(err => {
@@ -106,6 +116,77 @@ const RecepcionistaPanel = () => {
           type="datetime-local"
           value={fecha}
           onChange={(e) => setFecha(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '10px',
+            marginBottom: '10px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            fontSize: '16px'
+          }}
+        />
+                <input
+          type="number"
+          placeholder="Edad"
+          value={edad}
+          onChange={(e) => setEdad(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '10px',
+            marginBottom: '10px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            fontSize: '16px'
+          }}
+        />
+        <input
+          type="number"
+          placeholder="Altura (cm)"
+          value={altura}
+          onChange={(e) => setAltura(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '10px',
+            marginBottom: '10px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            fontSize: '16px'
+          }}
+        />
+        <input
+          type="number"
+          placeholder="Peso (kg)"
+          value={peso}
+          onChange={(e) => setPeso(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '10px',
+            marginBottom: '10px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            fontSize: '16px'
+          }}
+        />
+        <textarea
+          placeholder="Motivo de la consulta"
+          value={motivo}
+          onChange={(e) => setMotivo(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '10px',
+            marginBottom: '10px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            fontSize: '16px',
+            resize: 'none',
+            height: '80px'
+          }}
+        />
+         <input
+          type="text"
+          placeholder="Medico"
+          value={medico}
+          onChange={(e) => setMedico(e.target.value)}
           style={{
             width: '100%',
             padding: '10px',

@@ -1,20 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import view from '../assets/view.png';
+import deleteIcon from '../assets/delete2.png'; // Asegúrate de tener la imagen delete.png en la carpeta assets
 
 const MedicoPanel = () => {
-    const turnosData = [
-    { nombre_paciente: "elias", fecha: '2023-10-01', hora: '10:00 AM' },
-    { nombre_paciente: "maria", fecha: '2023-10-02', hora: '11:00 AM' },
-    { nombre_paciente: "jose", fecha: '2023-10-03', hora: '12:00 PM' },
-    { nombre_paciente: "carla", fecha: '2023-10-10', hora: '07:00 PM' },
-    { nombre_paciente: "ana", fecha: '2023-10-04', hora: '01:00 PM' },
-    { nombre_paciente: "luis", fecha: '2023-10-05', hora: '02:00 PM' },
-    { nombre_paciente: "sofia", fecha: '2023-10-06', hora: '03:00 PM' },
-    { nombre_paciente: "pablo", fecha: '2023-10-07', hora: '04:00 PM' },
-    { nombre_paciente: "lucia", fecha: '2023-10-08', hora: '05:00 PM' },
-    { nombre_paciente: "martin", fecha: '2023-10-09', hora: '06:00 PM' },
-     ];
+
 
   const [message, setMessage] = useState('');
   const [turnos, setTurnos] = useState([]);
@@ -32,22 +23,6 @@ const MedicoPanel = () => {
       navigate('/dashboard');
       return;
     }
-
-
-  //   axios.get('http://localhost:3001/api/medic/data', {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`
-  //     }
-  //   })
-  //   .then(res => {
-  //         setMessage(res.data.message);
-  //         setTurnos(turnosData);
-  //       })   
-  //   .catch(err => {
-  //     console.error(err);
-  //     setMessage('Acceso denegado o error del servidor.');
-  //   });
-  // }, [navigate]);
 
      axios.get('http://localhost:3001/api/turnos', {
       headers: {
@@ -98,7 +73,8 @@ const MedicoPanel = () => {
   };
 
   return (
-    <div>
+    <div style={{
+      margin: '20px',}}>
       <h2 style={{
       color: 'black',
       fontSize: '32px',
@@ -106,7 +82,7 @@ const MedicoPanel = () => {
       marginBottom: '20px',
       textTransform: 'uppercase',
       letterSpacing: '2px',
-      borderBottom: '2px solid black',
+      borderBottom: '2px solid rgb(0, 123, 255)',
       paddingBottom: '10px',
       justifyContent: 'flex-start',
     }}>
@@ -133,53 +109,32 @@ const MedicoPanel = () => {
                   backgroundColor: 'transparent',
                   border: 'none',
                   cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
                 }} title="Ver"
                 onClick={() => handleDetails(turno)}>
-                <svg
-                  className="w-6 h-6 text-gray-800 dark:text-white"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"
-                  />
-                  <path
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                  />
-                </svg>
+                <img
+                  src={view} // Reemplaza con la ruta correcta de tu archivo delete.png
+                  alt="ver detalles"
+                  style={{ width: '24px', height: '24px' }}
+                />
               </button>
                 <button
                 style={{
                   backgroundColor: 'transparent',
                   border: 'none',
                   cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
                 }}
                 title="Eliminar"
                 onClick={() => openModal(turno.id)}
               >
-                <svg
-                  className="w-6 h-6 text-gray-800 dark:text-white"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                 <img
+                  src={deleteIcon} // Reemplaza con la ruta correcta de tu archivo view.png
+                  alt="Eliminar"
+                  style={{ width: '24px', height: '24px' }}
+                />
                 </button>
 
 
@@ -192,9 +147,11 @@ const MedicoPanel = () => {
       </div>
       <button onClick={() => navigate('/dashboard')}
       style={{
+          width: '200px',
           backgroundColor: 'blue',
           color: 'white',
           padding: '10px 20px',
+          marginBottom: '20px',
           border: 'none',
           borderRadius: '6px',
           cursor: 'pointer',
