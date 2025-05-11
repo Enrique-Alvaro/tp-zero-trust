@@ -2,7 +2,13 @@ const express = require('express');
 const router = express.Router();
 const connection = require('../config/db');
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
+const { obtenerTurnos, crearTurno, eliminarTurno } = require('../controllers/turnoController');
 
+
+
+router.get('/', obtenerTurnos);
+router.post('/', crearTurno);
+router.delete('/:id', eliminarTurno);
 // Obtener médicos (visible solo para pacientes)
 router.get('/medicos', authenticateToken, authorizeRoles('paciente'), (req, res) => {
   const query = "SELECT id, username, email FROM users WHERE role = 'medico'";
