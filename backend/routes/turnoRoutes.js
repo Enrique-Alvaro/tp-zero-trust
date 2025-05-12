@@ -11,7 +11,7 @@ router.post('/', crearTurno);
 router.delete('/:id', eliminarTurno);
 // Obtener médicos (visible solo para pacientes)
 router.get('/medicos',  (req, res) => {
-  const query = "SELECT id, fisrt_name, lastname, email FROM users WHERE role = 'medico'";
+  const query = "SELECT id, first_name, last_name, email FROM users WHERE role = 'medico'";
   
   connection.query(query, (err, results) => {
     if (err) {
