@@ -30,9 +30,9 @@ const MedicoPanel = () => {
       }
     })
     .then(res => {
-      console.log(res.data.turnos);
+      const turnosFiltrados = res.data.filter(turno => turno.medico === user.id.toString());
       setMessage('Turnos cargados correctamente.');
-      setTurnos(res.data || []); // Asignar los turnos obtenidos de la API
+      setTurnos(turnosFiltrados);
     })
     .catch(err => {
       console.error(err);

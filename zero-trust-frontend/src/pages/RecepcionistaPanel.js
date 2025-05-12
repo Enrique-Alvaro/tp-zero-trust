@@ -10,7 +10,10 @@ const RecepcionistaPanel = () => {
   const [altura, setAltura] = useState('');
   const [peso, setPeso] = useState('');
   const [motivo, setMotivo] = useState('');
-  const [medico, setMedico] = useState('');
+   const [medico, setSelectedMedico] = useState('');
+  const [medicos, setMedicos] = useState([]);
+  const [paciente, setSelectedPaciente] = useState('');
+  const [pacientes, setPaciente] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,17 +40,33 @@ const RecepcionistaPanel = () => {
       console.error(err);
       alert('Error al cargar los turnos.');
     });
+
+    axios.get('http://localhost:3001/api/admin/users', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(res => {
+      const aux = res.data;
+      const pacientesFiltrados = res.data.filter(user => user.role === 'paciente'); // Filtrar solo pacientes
+      const medicosFiltrados = aux.filter(user => user.role === 'medico'); // Filtrar solo médicos
+      setPaciente(pacientesFiltrados);
+      setMedicos(medicosFiltrados);
+    })
+    .catch(err => {
+      console.error('Error al cargar médicos o pacientes', err);
+    });
   }, [navigate]);
 
   const handleAddTurno = () => {
-    if (!nombre || !fecha || !edad || !altura || !peso || !motivo || !medico ) {
+    if (!nombre || !fecha || !edad || !altura || !peso || !motivo || !medico || !paciente) {
       alert('Por favor, completa todos los campos.');
       return;
     }
 
     const token = localStorage.getItem('token');
 
-    axios.post('http://localhost:3001/api/turnos', { nombre, fecha,edad,altura,peso,motivo,medico }, {
+    axios.post('http://localhost:3001/api/turnos', { nombre, fecha,edad,altura,peso,motivo,medico,paciente }, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -66,7 +85,8 @@ const RecepcionistaPanel = () => {
   setAltura('');
   setPeso('');
   setMotivo('');
-  setMedico('');
+  setMedicos([0]);
+  setPaciente([0]);
 })
 
     .catch(err => {
@@ -93,9 +113,9 @@ const RecepcionistaPanel = () => {
 
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <h2 style={{ textAlign: 'center', color: '#4CAF50' }}>Panel de Recepcionista</h2>
+      <h2 style={{ textAlign: 'center', color: 'black' }}>Panel de Recepcionista</h2>
 
-      <div style={{ marginBottom: '30px', padding: '20px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
+      <div style={{ marginBottom: '30px', padding: '35px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
         <h3 style={{ color: '#333' }}>Agregar Turno</h3>
         <input
           type="text"
@@ -181,11 +201,9 @@ const RecepcionistaPanel = () => {
             height: '80px'
           }}
         />
-         <input
-          type="text"
-          placeholder="Medico"
+         <select
           value={medico}
-          onChange={(e) => setMedico(e.target.value)}
+          onChange={(e) => setSelectedMedico(e.target.value)}
           style={{
             width: '100%',
             padding: '10px',
@@ -194,7 +212,34 @@ const RecepcionistaPanel = () => {
             borderRadius: '4px',
             fontSize: '16px'
           }}
-        />
+        >
+          <option value="">Seleccione un médico</option>
+          {medicos.map((medico) => (
+            <option key={medico.id} value={medico.id}>
+              {medico.first_name + ' ' + medico.last_name}  {/* Mostrar el nombre del médico */}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={paciente}
+          onChange={(e) => setSelectedPaciente(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '10px',
+            marginBottom: '10px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            fontSize: '16px'
+          }}
+        >
+          <option value="">Seleccione un Paciente</option>
+          {pacientes.map((paciente) => (
+            <option key={paciente.id} value={paciente.id}>
+              {paciente.first_name + ' ' + paciente.last_name} {/* Mostrar el nombre del médico */}
+            </option>
+          ))}
+        </select>
         <button
           onClick={handleAddTurno}
           style={{
@@ -239,7 +284,8 @@ const RecepcionistaPanel = () => {
                   border: 'none',
                   borderRadius: '4px',
                   fontSize: '14px',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  width: '80px',
                 }}
               >
                 Eliminar

@@ -5,9 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const PacientePanel = () => {
   const navigate = useNavigate();
   const [medicos, setMedicos] = useState([]);
-  const [view, setView] = useState('none');
-  const [nombre, setNombre] = useState('');
-  const [fecha, setFecha] = useState('');
+  const [turnos, setTurnos] = useState([]);
   const [mensaje, setMensaje] = useState('');
 
   useEffect(() => {
@@ -17,124 +15,110 @@ const PacientePanel = () => {
     if (!token || (user.role !== 'paciente' && user.role !== 'admin')) {
       alert('Acceso denegado');
       navigate('/dashboard');
-    }
-  }, [navigate]);
-
-  const handleViewMedicos = async () => {
-    setView('medicos');
-    setMensaje('');
-    const token = localStorage.getItem('token');
-
-    try {
-      const res = await axios.get('http://localhost:3001/api/turnos/medicos', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setMedicos(res.data || []);
-    } catch (err) {
-      console.error('Error al cargar médicos:', err);
-      setMedicos([]);
-    }
-  };
-
-  const handleSolicitarTurno = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('token');
-
-    if (!nombre || !fecha) {
-      setMensaje('Completa todos los campos');
       return;
     }
 
-    try {
-      const res = await axios.post('http://localhost:3001/api/turnos/solicitar',
-        { nombre, fecha },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setMensaje(res.data.message);
-      setNombre('');
-      setFecha('');
-    } catch (err) {
-      console.error('Error al solicitar turno:', err);
-      setMensaje('Hubo un error al solicitar el turno');
-    }
-  };
+    // Obtener médicos disponibles
+    axios.get('http://localhost:3001/api/turnos/medicos', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => {
+      setMedicos(res.data || []);
+    })
+    .catch(err => {
+      console.error('Error al cargar médicos:', err);
+      setMedicos([]);
+    });
+
+    // Obtener turnos asociados al paciente
+    axios.get('http://localhost:3001/api/turnos', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => {
+      const turnosFiltrados = res.data.filter(turno => turno.paciente === user.id); // Filtrar turnos por paciente logueado
+      setTurnos(turnosFiltrados);
+    })
+    .catch(err => {
+      console.error('Error al cargar turnos:', err);
+      setTurnos([]);
+    });
+  }, [navigate]);
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <h2 style={{ color: '#333', marginBottom: '20px' }}>Panel del Paciente</h2>
 
-      <button onClick={handleViewMedicos} style={buttonStyle}>Ver Médicos</button>
-      <button onClick={() => setView('solicitar')} style={buttonStyle}>Solicitar Turno</button>
-      <button onClick={() => navigate('/dashboard')} style={buttonStyle}>Volver al Dashboard</button>
+      {/* Médicos disponibles */}
+      <div style={{ marginBottom: '30px' }}>
+        <h3 style={{ color: '#007bff', marginBottom: '10px' }}>Médicos Disponibles</h3>
+        {medicos.length === 0 ? (
+          <p>No hay médicos registrados.</p>
+        ) : (
+          <div style={gridStyle}>
+            {medicos.map((medico) => (
+              <div key={medico.id} style={cardStyle}>
+                <h4 style={{ color: '#333' }}>{medico.first_name + ' ' + medico.last_name }</h4>
+                <p style={{ color: '#555' }}>Email: {medico.email}</p>
+                <p style={{ color: '#555' }}>Especialidad: {medico.especialidad || 'No especificada'}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-      {view === 'medicos' && (
-        <div>
-          <h3>Médicos disponibles</h3>
-          {medicos.length === 0 ? (
-            <p>No hay médicos registrados.</p>
-          ) : (
-            <div style={scrollBox}>
-              <ul>
-                {medicos.map((medico, index) => (
-                  <li key={index}>
-                    {medico.username} ({medico.email})
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
+      {/* Turnos asociados */}
+      <div>
+        <h3 style={{ color: '#007bff', marginBottom: '10px' }}>Tus Turnos</h3>
+        {turnos.length === 0 ? (
+          <p>No tienes turnos asignados.</p>
+        ) : (
+          <div style={gridStyle}>
+            {turnos.map((turno) => (
+              <div key={turno.id} style={cardStyle}>
+                <h4 style={{ color: '#333' }}>Turno con {turno.medico_nombre}</h4>
+                <p style={{ color: '#555' }}>Fecha: {new Date(turno.fecha).toLocaleDateString('es-ES')}</p>
+                <p style={{ color: '#555' }}>Hora: {new Date(turno.fecha).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</p>
+                <p style={{ color: '#555' }}>Motivo: {turno.motivo || 'No especificado'}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-      {view === 'solicitar' && (
-        <div>
-          <h3>Solicitar Turno</h3>
-          <form onSubmit={handleSolicitarTurno}>
-            <input
-              type="text"
-              placeholder="Nombre del médico"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              style={inputStyle}
-            />
-            <input
-              type="date"
-              value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
-              style={inputStyle}
-            />
-            <button type="submit" style={buttonStyle}>Confirmar Turno</button>
-          </form>
-          {mensaje && <p>{mensaje}</p>}
-        </div>
-      )}
+      {/* Botón para volver al Dashboard */}
+      <button
+        onClick={() => navigate('/dashboard')}
+        style={{
+          display: 'block',
+          margin: '20px auto',
+          padding: '10px 20px',
+          backgroundColor: '#2196F3',
+          color: 'white',
+          border: 'none',
+          borderRadius: '6px',
+          fontSize: '16px',
+          cursor: 'pointer'
+        }}
+      >
+        Volver al Dashboard
+      </button>
     </div>
   );
 };
 
-const buttonStyle = {
-  backgroundColor: 'blue',
-  color: 'white',
-  padding: '10px 20px',
-  margin: '5px',
-  border: 'none',
-  borderRadius: '6px',
-  cursor: 'pointer',
+const gridStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+  gap: '20px',
 };
 
-const inputStyle = {
-  margin: '5px',
-  padding: '8px',
-  borderRadius: '5px',
-  border: '1px solid #ccc'
-};
-
-const scrollBox = {
-  maxHeight: '300px',
-  overflowY: 'auto',
-  border: '1px solid #ccc',
-  padding: '10px',
-  borderRadius: '8px'
+const cardStyle = {
+  backgroundColor: '#f9f9f9',
+  border: '1px solid #ddd',
+  borderRadius: '8px',
+  padding: '15px',
+  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+  textAlign: 'left',
 };
 
 export default PacientePanel;
