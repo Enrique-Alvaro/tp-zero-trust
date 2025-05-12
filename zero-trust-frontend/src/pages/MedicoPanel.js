@@ -82,13 +82,12 @@ const MedicoPanel = () => {
       marginBottom: '20px',
       textTransform: 'uppercase',
       letterSpacing: '2px',
-      borderBottom: '2px solid rgb(0, 123, 255)',
+      borderBottom: '2px solid #0288d1',
       paddingBottom: '10px',
       justifyContent: 'flex-start',
     }}>
       Panel de Médicos
     </h2>
-      <p>{message}</p>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px',marginBottom: '30px', justifyContent: 'flex-start '}}>
         {turnos.length > 0 ? (
           turnos.map((turno, index) => (
@@ -148,7 +147,7 @@ const MedicoPanel = () => {
       <button onClick={() => navigate('/dashboard')}
       style={{
           width: '200px',
-          backgroundColor: 'blue',
+          backgroundColor:' #0288d1',
           color: 'white',
           padding: '10px 20px',
           marginBottom: '20px',

@@ -10,7 +10,7 @@ const RecepcionistaPanel = () => {
   const [altura, setAltura] = useState('');
   const [peso, setPeso] = useState('');
   const [motivo, setMotivo] = useState('');
-   const [medico, setSelectedMedico] = useState('');
+  const [medico, setSelectedMedico] = useState('');
   const [medicos, setMedicos] = useState([]);
   const [paciente, setSelectedPaciente] = useState('');
   const [pacientes, setPaciente] = useState([]);
@@ -32,30 +32,30 @@ const RecepcionistaPanel = () => {
         Authorization: `Bearer ${token}`
       }
     })
-    .then(res => {
-      const turnosOrdenados = res.data.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-      setTurnos(turnosOrdenados);
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Error al cargar los turnos.');
-    });
+      .then(res => {
+        const turnosOrdenados = res.data.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+        setTurnos(turnosOrdenados);
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error al cargar los turnos.');
+      });
 
     axios.get('http://localhost:3001/api/admin/users', {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
-    .then(res => {
-      const aux = res.data;
-      const pacientesFiltrados = res.data.filter(user => user.role === 'paciente'); // Filtrar solo pacientes
-      const medicosFiltrados = aux.filter(user => user.role === 'medico'); // Filtrar solo médicos
-      setPaciente(pacientesFiltrados);
-      setMedicos(medicosFiltrados);
-    })
-    .catch(err => {
-      console.error('Error al cargar médicos o pacientes', err);
-    });
+      .then(res => {
+        const aux = res.data;
+        const pacientesFiltrados = res.data.filter(user => user.role === 'paciente'); // Filtrar solo pacientes
+        const medicosFiltrados = aux.filter(user => user.role === 'medico'); // Filtrar solo médicos
+        setPaciente(pacientesFiltrados);
+        setMedicos(medicosFiltrados);
+      })
+      .catch(err => {
+        console.error('Error al cargar médicos o pacientes', err);
+      });
   }, [navigate]);
 
   const handleAddTurno = () => {
@@ -66,33 +66,33 @@ const RecepcionistaPanel = () => {
 
     const token = localStorage.getItem('token');
 
-    axios.post('http://localhost:3001/api/turnos', { nombre, fecha,edad,altura,peso,motivo,medico,paciente }, {
+    axios.post('http://localhost:3001/api/turnos', { nombre, fecha, edad, altura, peso, motivo, medico, paciente }, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
-    .then(() => {
-    return axios.get('http://localhost:3001/api/turnos', {
-    headers: { Authorization: `Bearer ${token}` }
-   });
-})
-.then(res => {
-  const turnosOrdenados = res.data.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-  setTurnos(turnosOrdenados);
-  setNombre('');
-  setFecha('');
-  setEdad('');
-  setAltura('');
-  setPeso('');
-  setMotivo('');
-  setMedicos([0]);
-  setPaciente([0]);
-})
+      .then(() => {
+        return axios.get('http://localhost:3001/api/turnos', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      })
+      .then(res => {
+        const turnosOrdenados = res.data.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+        setTurnos(turnosOrdenados);
+        setNombre('');
+        setFecha('');
+        setEdad('');
+        setAltura('');
+        setPeso('');
+        setMotivo('');
+        setSelectedMedico('');
+        setSelectedPaciente('');
+      })
 
-    .catch(err => {
-      console.error(err);
-      alert('Error al agregar el turno.');
-    });
+      .catch(err => {
+        console.error(err);
+        alert('Error al agregar el turno.');
+      });
   };
 
   const handleDeleteTurno = (id) => {
@@ -102,13 +102,13 @@ const RecepcionistaPanel = () => {
         Authorization: `Bearer ${token}`
       }
     })
-    .then(() => {
-      setTurnos(turnos.filter(turno => turno.id !== id));
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Error al eliminar el turno.');
-    });
+      .then(() => {
+        setTurnos(turnos.filter(turno => turno.id !== id));
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error al eliminar el turno.');
+      });
   };
 
   return (
@@ -117,11 +117,15 @@ const RecepcionistaPanel = () => {
 
       <div style={{ marginBottom: '30px', padding: '35px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
         <h3 style={{ color: '#333' }}>Agregar Turno</h3>
-        <input
-          type="text"
-          placeholder="Nombre"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
+        <select
+          value={paciente}
+          onChange={(e) => {
+            setSelectedPaciente(e.target.value);
+            const selectedPaciente = pacientes.find((p) => p.id.toString() === e.target.value);
+            if (selectedPaciente) {
+              setNombre(selectedPaciente.first_name + ' ' + selectedPaciente.last_name);
+            }
+          }}
           style={{
             width: '100%',
             padding: '10px',
@@ -130,7 +134,14 @@ const RecepcionistaPanel = () => {
             borderRadius: '4px',
             fontSize: '16px'
           }}
-        />
+        >
+          <option value="">Seleccione un Paciente</option>
+          {pacientes.map((paciente) => (
+            <option key={paciente.id} value={paciente.id}>
+              {paciente.first_name + ' ' + paciente.last_name} {/* Mostrar el nombre del médico */}
+            </option>
+          ))}
+        </select>
         <input
           type="datetime-local"
           value={fecha}
@@ -144,7 +155,7 @@ const RecepcionistaPanel = () => {
             fontSize: '16px'
           }}
         />
-                <input
+        <input
           type="number"
           placeholder="Edad"
           value={edad}
@@ -201,7 +212,7 @@ const RecepcionistaPanel = () => {
             height: '80px'
           }}
         />
-         <select
+        <select
           value={medico}
           onChange={(e) => setSelectedMedico(e.target.value)}
           style={{
@@ -217,26 +228,6 @@ const RecepcionistaPanel = () => {
           {medicos.map((medico) => (
             <option key={medico.id} value={medico.id}>
               {medico.first_name + ' ' + medico.last_name}  {/* Mostrar el nombre del médico */}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={paciente}
-          onChange={(e) => setSelectedPaciente(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '10px',
-            marginBottom: '10px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            fontSize: '16px'
-          }}
-        >
-          <option value="">Seleccione un Paciente</option>
-          {pacientes.map((paciente) => (
-            <option key={paciente.id} value={paciente.id}>
-              {paciente.first_name + ' ' + paciente.last_name} {/* Mostrar el nombre del médico */}
             </option>
           ))}
         </select>

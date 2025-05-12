@@ -59,7 +59,6 @@ const PacientePanel = () => {
               <div key={medico.id} style={cardStyle}>
                 <h4 style={{ color: '#333' }}>{medico.first_name + ' ' + medico.last_name }</h4>
                 <p style={{ color: '#555' }}>Email: {medico.email}</p>
-                <p style={{ color: '#555' }}>Especialidad: {medico.especialidad || 'No especificada'}</p>
               </div>
             ))}
           </div>
@@ -75,10 +74,10 @@ const PacientePanel = () => {
           <div style={gridStyle}>
             {turnos.map((turno) => (
               <div key={turno.id} style={cardStyle}>
-                <h4 style={{ color: '#333' }}>Turno con {turno.medico_nombre}</h4>
+                <h4 style={{ color: '#333' }}>Turno con {medicos.find((medico) => medico.id.toString() === turno.medico)?.first_name + ' '+ medicos.find((medico) => medico.id.toString() === turno.medico)?.last_name  || 'Médico no encontrado'}</h4>
                 <p style={{ color: '#555' }}>Fecha: {new Date(turno.fecha).toLocaleDateString('es-ES')}</p>
                 <p style={{ color: '#555' }}>Hora: {new Date(turno.fecha).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</p>
-                <p style={{ color: '#555' }}>Motivo: {turno.motivo || 'No especificado'}</p>
+                <p style={{ color: '#555' }}>Motivo: {turno.motivo_consulta || 'No especificado'}</p>
               </div>
             ))}
           </div>
