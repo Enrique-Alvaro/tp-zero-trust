@@ -13,14 +13,14 @@ const obtenerTurnos = (req, res) => {
 
 // Crear un nuevo turno
 const crearTurno = (req, res) => {
-  const { nombre, fecha, edad, altura, peso, motivo,medico } = req.body;
+  const { nombre, fecha, edad, altura, peso, motivo,medico,paciente } = req.body;
 
   if (!nombre || !fecha) {
     return res.status(400).json({ message: 'Faltan campos' });
   }
 
-  const query = 'INSERT INTO turno (nombre, fecha, edad, altura, peso, motivo_consulta,medico) VALUES (?,?,?,?,?,?,?)';
-  connection.query(query, [nombre, fecha, edad, altura, peso, motivo,medico], (err, result) => {
+  const query = 'INSERT INTO turno (nombre, fecha, edad, altura, peso, motivo_consulta,medico,paciente) VALUES (?,?,?,?,?,?,?,?)';
+  connection.query(query, [nombre, fecha, edad, altura, peso, motivo,medico,paciente], (err, result) => {
     if (err) {
       console.error('Error al crear turno', err);
       return res.status(500).json({ message: 'Error al crear turno' });
